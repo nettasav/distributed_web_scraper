@@ -1,1 +1,9 @@
+# Project requirements
 pika == 1.3.2
+# url_manager
+pymongo==4.10.1
+# html_parser
+requests==2.32.3
+bs4==0.0.2
+# Development tools
+black==25.1.0

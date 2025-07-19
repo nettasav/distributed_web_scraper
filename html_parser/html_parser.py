@@ -1,16 +1,9 @@
 from bs4 import BeautifulSoup
-
 import requests
 import pika
-
 from urllib.parse import unquote
 
-# import os
-# urllib.parse.unqouate
-
-
 class HtmlParser:
-
     wiki_prefix = "https://he.wikipedia.org"
     wiki_folder = "/wiki/"
 
@@ -50,7 +43,6 @@ class HtmlParser:
             file.write(html.decode())
 
     def process_url(self, channel, method, properties, body):
-        # body = url
         decoded_body = body.decode()
         print(f" [x] Received {decoded_body}")
         html = self.get_html(decoded_body)
@@ -75,9 +67,6 @@ class HtmlParser:
         self.channel.basic_ack(delivery_tag=method.delivery_tag)
 
     def start(self):
-
-        # os.mkdir(self.output_path)
-
         self.channel.queue_declare(queue=self.urls_to_download, durable=True)
         self.channel.queue_declare(queue=self.check_duplicates, durable=True)
 
@@ -90,19 +79,3 @@ class HtmlParser:
         )
 
         self.channel.start_consuming()
-
-
-# test_html_obj = HtmlParser(None, None, None, "./fs")
-
-# my_html = {"bla": "bla"}
-# url = "https://he.wikipedia.org/wiki/Docker/bla"
-# name = url[len(test_html_obj.wiki_prefix) + len(test_html_obj.wiki_folder) :].replace(
-#     "/", "_"
-# )
-# print(name)
-# test_html_obj.save_to_fs(name, my_html)
-# # # test_html_obj.get_html("https://en.wikipedia.org/wiki/Parsing")
-# test_html_obj.get_html("https://he.wikipedia.org/wiki/Docker")
-# print(test_html_obj.html.text)
-# # test_html_obj.extract_urls()
-# # print(test_html_obj.links)

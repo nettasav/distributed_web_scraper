@@ -1,5 +1,6 @@
 import pika
 
+
 class UrlManager:
     def __init__(self, unique_urls, check_duplicates, urls_to_download, channel):
         self.unique_urls = unique_urls
@@ -10,9 +11,6 @@ class UrlManager:
     def detect_duplicates(self, url):
         return self.unique_urls.find_one({"url": url})
 
-    # def save_to_DB(self):
-    #     pass
-
     def save_to_DB(self, ch, method, properties, body):
         """function to receive the message from rabbitmq
         print it
@@ -22,7 +20,6 @@ class UrlManager:
         print("received msg : ", body.decode("utf-8"))
 
         if not self.detect_duplicates(body):
-            # if True:
             message = body
             self.channel.basic_publish(
                 exchange="",
@@ -35,12 +32,9 @@ class UrlManager:
             print(f" [x] Sent {message}")
             data = {"url": str(body)}
             self.unique_urls.insert_one(data)
-
-        # print("acking it")
         self.channel.basic_ack(delivery_tag=method.delivery_tag)
 
     def start(self):
-
         self.channel.queue_declare(queue=self.check_duplicates, durable=True)
         self.channel.queue_declare(queue=self.urls_to_download, durable=True)
 
